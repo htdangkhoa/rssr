@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'shards-ui/dist/css/shards.min.css';
 import React, {Suspense} from 'react';
 import { render, hydrate } from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
@@ -7,7 +6,7 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
 import { renderRoutes } from 'react-router-config';
 import { useSSR } from 'react-i18next';
-import routes from '../utils/router';
+import routes from '../utils/routes';
 import configurationStore from '../utils/configurationStore';
 import '../utils/i18n';
 

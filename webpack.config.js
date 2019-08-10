@@ -13,7 +13,7 @@ let entry = [
 let plugins = [
   new webpack.DefinePlugin({
     __DEV__: JSON.stringify(isDev),
-  })
+  }),
 ];
 
 if (isDev) {

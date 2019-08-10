@@ -1,5 +1,5 @@
 import { createBrowserHistory, createMemoryHistory } from 'history';
-import { createStore, compose, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { routerMiddleware } from 'connected-react-router';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
@@ -10,16 +10,16 @@ const isDev = process.env.NODE_ENV !== 'production';
 
 const fromServer = typeof window === 'undefined';
 
-const logger = createLogger({ predicate: (getState, action) => isDev })
+const logger = createLogger({ predicate: (getState, action) => isDev });
 
 export default ({ initialState, url }) => {
   const history = fromServer ? createMemoryHistory({ initialEntries: [url || '/'] }) : createBrowserHistory();
   
   const middlewares = [
     routerMiddleware(history),
-    logger,
     thunk,
-  ].filter(Boolean)
+    logger,
+  ];
 
   const store = createStore(
     createReducers(history),

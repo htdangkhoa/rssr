@@ -1,9 +1,9 @@
+import { keys } from 'lodash';
 import i18n from 'i18next';
 import languageDetector from 'i18next-browser-languagedetector';
 import xhr from 'i18next-xhr-backend';
 import { initReactI18next } from 'react-i18next';
-import en from '../locales/en/translation.json';
-import vn from '../locales/vn/translation.json';
+import resources from '../locales';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -12,16 +12,8 @@ i18n
   .use(languageDetector)
   .use(initReactI18next)
   .init({
-    resources: {
-      en: {
-        translations: en,
-      },
-      vn: {
-        translations: vn,
-      },
-    },
-    lng: 'en',
-    fallbackLng: 'en',
+    resources,
+    fallbackLng: keys(resources),
     debug: isDev,
     ns: 'translations',
     defaultNS: 'translations',

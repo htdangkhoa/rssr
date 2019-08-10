@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
-import UserModel from './user.model';
+import * as UserModel from './user.model';
 
-const connectDB = async () => {
+const connectDB = async (host) => {
   try {
-    await mongoose.connect(process.env.DB, {
+    await mongoose.connect(host, {
       useNewUrlParser: true,
     });
 

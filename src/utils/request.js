@@ -6,8 +6,18 @@ const client = axios.create({
 
 export default client;
 
+const paths = {
+  LOGIN: '/auth/login'
+}
+
 export const getUsers = async () => {
   const { data } = await client.get('/auth/users');
+
+  return data;
+}
+
+export const postLogin = async ({ email, password }) => {
+  const { data } = await client.post(paths.LOGIN, {email, password });
 
   return data;
 }

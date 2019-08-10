@@ -1,3 +1,6 @@
 {
-  "hello": "Hello"
+  "translations": {
+    "language": "Language",
+    "hello": "Hello"
+  }
 }

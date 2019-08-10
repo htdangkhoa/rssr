@@ -1,11 +1,7 @@
-import translationEn from './en/translation.json';
-import translationVn from './vn/translation.json';
+import en from './en/translation.json';
+import vn from './vn/translation.json';
 
 export default {
-  en: {
-    translations: translationEn
-  },
-  vn: {
-    translations: translationVn
-  }
+  en,
+  vn,
 }

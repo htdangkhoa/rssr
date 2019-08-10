@@ -3,8 +3,12 @@ import { config } from 'dotenv';
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
+import cookieSession from 'cookie-session';
+import cookieParser from 'cookie-parser';
+import cookiesMiddleware from 'universal-cookie-express';
 import compression from 'compression';
 import helmet from 'helmet';
+import favicon from 'serve-favicon';
 import { connectDB } from './models';
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
@@ -19,26 +23,43 @@ import { Provider } from 'react-redux';
 import Helmet from 'react-helmet';
 import html from '../utils/html';
 import openBrowser from 'react-dev-utils/openBrowser';
-import routes from '../utils/router';
-import auth from './routes/auth.route';
+import reactRoutes from '../utils/routes';
+import routes from './routes';
 import '../utils/i18n';
+
+global.result = {
+  code: 200,
+  data: null,
+  error: null,
+};
 
 config();
 
-connectDB();
+const { PORT, NODE_ENV, DB, SECRET } = process.env;
 
-const isDev = process.env.NODE_ENV !== 'production';
+const isDev = NODE_ENV !== 'production';
 
 const app = express();
 
+app.set('trust proxy', 'loopback');
+
 let middlewares = [
-  express.static(path.resolve(__dirname, '../..', 'dist')),
-  express.static(path.resolve(__dirname, '..', 'app/assets')),
+  express.static(path.resolve(__dirname, '..', '..', 'dist')),
+  express.static(path.resolve(__dirname, '..', 'app', 'assets')),
+  favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico')),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: false }),
-  cors(),
+  cors({ credentials: true, origin: true, }),
   compression(),
   helmet(),
+  cookieParser(SECRET),
+  cookieSession({
+    name: 'token',
+    secret: SECRET,
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    httpOnly: true,
+  }),
+  cookiesMiddleware(),
 ];
 
 if (isDev) {
@@ -61,13 +82,13 @@ if (isDev) {
 
 app.use(middlewares);
 
-app.use('/auth', auth);
+app.use('/', routes);
 
 app.get('**', (req, res) => {
   const { store } = configurationStore({ url: req.url });
 
   const preloadData = () => {
-    const branch = matchRoutes(routes, req.path);
+    const branch = matchRoutes(reactRoutes, req.path);
 
     const promises = branch.map(({ route, match }) => {
       if (route.preload) return Promise.all(
@@ -91,7 +112,7 @@ app.get('**', (req, res) => {
     const indexComponent = (
       <Provider store={store}>
         <StaticRouter location={req.path} context={context}>
-          {renderRoutes(routes)}
+          {renderRoutes(reactRoutes)}
         </StaticRouter>
       </Provider>
     );
@@ -112,10 +133,16 @@ app.get('**', (req, res) => {
   })();
 });
 
-app.listen(process.env.PORT || 80, () => {
-  console.log(`Server is listening on port: ${process.env.PORT}`);
+(async () => {
+  console.clear();
 
-  if (isDev && openBrowser(`http://localhost:${process.env.PORT}`)) {
-    console.log("==> 🖥️  Opened on your browser's tab!");
-  }
-});
+  await connectDB(DB);
+
+  app.listen(PORT || 80, () => {
+    console.log(`Server is listening on port: ${PORT}`);
+
+    // if (isDev && openBrowser(`http://localhost:${PORT}`)) {
+    //   console.log("==> 🖥️  Opened on your browser's tab!");
+    // }
+  });
+})();

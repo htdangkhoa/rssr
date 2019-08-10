@@ -1,3 +1,6 @@
 {
-  "hello": "Xin chào"
+  "translations": {
+    "language": "Ngôn ngữ",
+    "hello": "Xin chào"
+  }
 }
