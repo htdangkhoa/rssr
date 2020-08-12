@@ -71,7 +71,7 @@
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
-    "serialize-javascript": "^1.7.0",
+    "serialize-javascript": "^3.1.0",
     "shards-react": "^1.0.3",
     "shards-ui": "^3.0.0",
     "styled-components": "^4.3.2"
